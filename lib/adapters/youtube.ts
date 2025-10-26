@@ -276,5 +276,5 @@ export class YouTubeAdapter implements VideoAdapter {
  */
 export async function searchVideos(query: string, maxResults = 5) {
   const adapter = new YouTubeAdapter()
-  return adapter.search(query, maxResults)
+  return adapter.searchVideos({ query, maxResults })
 }
