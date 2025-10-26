@@ -1,0 +1,232 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  externalId  String
+  source      String
+  title       String
+  description String?
+  category    String
+  brand       String?
+  model       String?
+  imageUrl    String?
+  imageAltText String?
+  specs       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lastScraped DateTime?
+  deals       Deal[]
+  articles    Article[]
+  trends      Trend[]
+  priceHistory PriceHistory[]
+  mediaAssets  MediaAsset[]
+  priceWatches PriceWatch[]
+  
+  @@unique([externalId, source])
+  @@index([category])
+  @@index([brand])
+  @@index([isActive])
+}
+
+model Deal {
+  id            String   @id @default(cuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  retailer      String
+  retailerSKU   String?
+  price         Float
+  originalPrice Float?
+  discount      Float?
+  currency      String   @default("USD")
+  url           String
+  affiliateUrl  String?
+  isActive      Boolean  @default(true)
+  inStock       Boolean  @default(true)
+  stockCount    Int?
+  startDate     DateTime @default(now())
+  endDate       DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastVerified  DateTime @default(now())
+  affiliateLinks AffiliateLink[]
+  dealPosts     DealPost[]
+  
+  @@index([productId])
+  @@index([retailer])
+  @@index([isActive])
+  @@index([discount])
+  @@index([price])
+}
+
+model Article {
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  content         String
+  excerpt         String?
+  authorName      String   @default("TechDeals Team")
+  niche           String
+  status          String   @default("draft")
+  metaTitle       String?
+  metaDescription String?
+  ogImage         String?
+  publishedAt     DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  products        Product[]
+  mediaAssets     MediaAsset[]
+  
+  @@index([slug])
+  @@index([niche])
+  @@index([status])
+  @@index([publishedAt])
+}
+
+model MediaAsset {
+  id           String   @id @default(cuid())
+  productId    String?
+  product      Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  articleId    String?
+  article      Article? @relation(fields: [articleId], references: [id], onDelete: SetNull)
+  platform     String
+  externalId   String
+  title        String
+  description  String?
+  thumbnailUrl String?
+  channelName  String?
+  duration     Int?
+  viewCount    Int?
+  likeCount    Int?
+  url          String
+  embedUrl     String?
+  publishedAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@unique([platform, externalId])
+  @@index([productId])
+  @@index([articleId])
+  @@index([platform])
+}
+
+model Trend {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  signal      String
+  metric      String
+  value       Float
+  timestamp   DateTime @default(now())
+  metadata    String?
+  
+  @@index([productId])
+  @@index([signal])
+  @@index([timestamp])
+  @@index([value])
+}
+
+model PriceHistory {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  price     Float
+  source    String
+  currency  String   @default("USD")
+  timestamp DateTime @default(now())
+  
+  @@index([productId, timestamp])
+  @@index([timestamp])
+}
+
+model AffiliateLink {
+  id          String   @id @default(cuid())
+  dealId      String
+  deal        Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  shortUrl    String?
+  longUrl     String
+  utmSource   String
+  utmMedium   String
+  utmCampaign String
+  utmTerm     String?
+  utmContent  String?
+  clicks      Int      @default(0)
+  conversions Int      @default(0)
+  revenue     Float    @default(0)
+  createdAt   DateTime @default(now())
+  lastClicked DateTime?
+  
+  @@index([dealId])
+  @@index([utmCampaign])
+  @@index([clicks])
+}
+
+model DealPost {
+  id          String       @id @default(cuid())
+  productId   String
+  dealId      String?
+  deal        Deal?        @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  oldPrice    Float?
+  newPrice    Float
+  discount    Float?
+  source      String
+  metadata    String?
+  createdAt   DateTime     @default(now())
+  socialPosts SocialPost[]
+  
+  @@index([productId])
+  @@index([dealId])
+  @@index([createdAt])
+}
+
+model PriceWatch {
+  id            String   @id @default(cuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId        String?
+  email         String
+  targetPrice   Float
+  lastSeenPrice Float?
+  notified      Boolean  @default(false)
+  notifiedAt    DateTime?
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
+  
+  @@index([productId])
+  @@index([email])
+  @@index([notified])
+  @@index([expiresAt])
+}
+
+model SocialPost {
+  id          String    @id @default(cuid())
+  platform    String
+  content     String
+  mediaUrls   String?
+  hashtags    String?
+  dealId      String?
+  articleId   String?
+  dealPostId  String?
+  dealPost    DealPost? @relation(fields: [dealPostId], references: [id], onDelete: SetNull)
+  postId      String?
+  shortUrl    String?
+  scheduledAt DateTime?
+  postedAt    DateTime?
+  status      String    @default("draft")
+  error       String?
+  likes       Int       @default(0)
+  retweets    Int       @default(0)
+  clicks      Int       @default(0)
+  createdAt   DateTime  @default(now())
+  
+  @@index([platform])
+  @@index([status])
+  @@index([scheduledAt])
+  @@index([postedAt])
+}
