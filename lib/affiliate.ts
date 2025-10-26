@@ -82,3 +82,24 @@ export function getPriceTimestampLabel(lastCheckedAt: Date | string): string {
 export function getAmazonDisclosure(): string {
   return 'As an Amazon Associate, we earn from qualifying purchases. Prices and availability are subject to change.'
 }
+
+/**
+ * Alias for generateAffiliateLink (backward compatibility)
+ */
+export function buildAffiliateLink(retailer: Retailer, url: string, source?: string, campaign?: string): string {
+  // Add UTM parameters if provided
+  let finalUrl = generateAffiliateLink(url, retailer)
+  
+  if (source || campaign) {
+    try {
+      const urlObj = new URL(finalUrl)
+      if (source) urlObj.searchParams.set('utm_source', source)
+      if (campaign) urlObj.searchParams.set('utm_campaign', campaign)
+      finalUrl = urlObj.toString()
+    } catch {
+      // If URL parsing fails, return as-is
+    }
+  }
+  
+  return finalUrl
+}
