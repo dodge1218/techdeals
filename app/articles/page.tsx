@@ -5,7 +5,7 @@ import { db } from '@/lib/db';
 
 export default async function ArticlesPage() {
   const articles = await db.article.findMany({
-    include: { products: true, mediaLinks: true },
+    include: { products: true },
     orderBy: { publishedAt: 'desc' },
   });
 
@@ -28,7 +28,7 @@ export default async function ArticlesPage() {
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="grid gap-6">
           {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
+            <ArticleCard key={article.id} article={article as any} />
           ))}
         </div>
 

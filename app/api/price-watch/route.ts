@@ -3,13 +3,23 @@ import { db } from '@/lib/db';
 
 export async function POST(request: Request) {
   try {
-    const { productId, targetPrice, userId } = await request.json();
+    const { productId, targetPrice, email } = await request.json();
     
+    if (!productId || !targetPrice || !email) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
     const watch = await db.priceWatch.create({
       data: {
-        productId,
+        email,
         targetPrice,
-        userId,
+        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        product: {
+          connect: { id: productId }
+        }
       },
     });
     

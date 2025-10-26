@@ -278,3 +278,34 @@ export async function searchVideos(query: string, maxResults = 5) {
   const adapter = new YouTubeAdapter()
   return adapter.searchVideos({ query, maxResults })
 }
+
+/**
+ * Format video duration from ISO 8601 to readable format
+ */
+export function formatDuration(duration: string): string {
+  // Example: PT1H23M45S -> 1:23:45
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/)
+  if (!match) return '0:00'
+  
+  const hours = match[1] ? parseInt(match[1]) : 0
+  const minutes = match[2] ? parseInt(match[2]) : 0
+  const seconds = match[3] ? parseInt(match[3]) : 0
+  
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+  }
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`
+}
+
+/**
+ * Format view count to readable format
+ */
+export function formatViewCount(count: number): string {
+  if (count >= 1000000) {
+    return `${(count / 1000000).toFixed(1)}M views`
+  }
+  if (count >= 1000) {
+    return `${(count / 1000).toFixed(1)}K views`
+  }
+  return `${count} views`
+}

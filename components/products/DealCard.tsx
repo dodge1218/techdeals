@@ -49,7 +49,7 @@ export function DealCard({ deal }: DealCardProps) {
       </div>
 
       <a
-        href={buildAffiliateLink(deal.retailer, deal.url, 'product-page', 'deal-card')}
+        href={buildAffiliateLink(deal.retailer as any, deal.url, 'product-page', 'deal-card')}
         target="_blank"
         rel="noopener noreferrer sponsored"
         className={`block w-full text-center font-semibold py-2 px-4 rounded transition ${

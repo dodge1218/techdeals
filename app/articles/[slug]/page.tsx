@@ -8,7 +8,7 @@ import { formatDistanceToNow } from 'date-fns';
 export default async function ArticlePage({ params }: { params: { slug: string } }) {
   const article = await db.article.findUnique({
     where: { slug: params.slug },
-    include: { products: { include: { deals: true } }, mediaLinks: true },
+    include: { products: { include: { deals: true } } },
   });
 
   if (!article) notFound();
@@ -41,39 +41,6 @@ export default async function ArticlePage({ params }: { params: { slug: string }
             </div>
           </header>
 
-          {article.mediaLinks.length > 0 && (
-            <section className="mb-8">
-              <h2 className="text-xl font-bold mb-4">Related Videos</h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                {article.mediaLinks.map((media) => (
-                  <div key={media.id} className="border rounded-lg overflow-hidden">
-                    {media.embedId && media.platform === 'youtube' ? (
-                      <iframe
-                        width="100%"
-                        height="200"
-                        src={`https://www.youtube.com/embed/${media.embedId}`}
-                        title={media.title || 'Video'}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    ) : (
-                      <a href={media.url} target="_blank" rel="noopener noreferrer">
-                        <div className="aspect-video bg-muted flex items-center justify-center">
-                          <span className="text-muted-foreground">View on {media.platform}</span>
-                        </div>
-                      </a>
-                    )}
-                    {media.title && (
-                      <div className="p-3">
-                        <p className="text-sm font-medium line-clamp-2">{media.title}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
 
           <div className="prose prose-lg max-w-none mb-12">
             {article.content.split('\n').map((para, i) => (

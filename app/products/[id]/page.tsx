@@ -36,26 +36,26 @@ export default async function ProductPage({ params }: { params: { id: string } }
   let videos = product.mediaAssets;
   if (videos.length === 0) {
     const searchQuery = `${product.brand} ${product.model} review`;
-    const youtubeResults = await searchVideos({ query: searchQuery, maxResults: 6 });
+    const youtubeResults = await searchVideos(searchQuery, 6);
     
     // Cache videos in database (fire and forget)
     youtubeResults.forEach(async (video) => {
       try {
         await prisma.mediaAsset.upsert({
-          where: { platform_externalId: { platform: 'youtube', externalId: video.id } },
+          where: { platform_externalId: { platform: 'youtube', externalId: video.externalId } },
           create: {
             platform: 'youtube',
-            externalId: video.id,
+            externalId: video.externalId,
             title: video.title,
             description: video.description,
             thumbnailUrl: video.thumbnailUrl,
             channelName: video.channelName,
-            duration: parseInt(video.duration?.replace(/\D/g, '') || '0'),
+            duration: video.duration || 0,
             viewCount: video.viewCount,
             likeCount: video.likeCount,
             url: video.url,
             embedUrl: video.embedUrl,
-            publishedAt: new Date(video.publishedAt),
+            publishedAt: video.publishedAt ? new Date(video.publishedAt) : new Date(),
             productId: product.id,
           },
           update: {
@@ -69,24 +69,24 @@ export default async function ProductPage({ params }: { params: { id: string } }
     });
 
     videos = youtubeResults.map(v => ({
-      id: v.id,
+      id: v.externalId,
       productId: product.id,
       articleId: null,
       platform: 'youtube' as const,
-      externalId: v.id,
+      externalId: v.externalId,
       title: v.title,
-      description: v.description,
-      thumbnailUrl: v.thumbnailUrl,
-      channelName: v.channelName,
-      duration: parseInt(v.duration?.replace(/\D/g, '') || '0'),
+      description: v.description || null,
+      thumbnailUrl: v.thumbnailUrl || null,
+      channelName: v.channelName || null,
+      duration: parseInt(String(v.duration).replace(/\D/g, '') || '0'),
       viewCount: v.viewCount || 0,
       likeCount: v.likeCount || 0,
       url: v.url,
-      embedUrl: v.embedUrl,
-      publishedAt: new Date(v.publishedAt),
+      embedUrl: v.embedUrl || null,
+      publishedAt: new Date(v.publishedAt || Date.now()),
       createdAt: new Date(),
       updatedAt: new Date(),
-    }));
+    })) as any;
   }
 
   const specs = product.specs ? JSON.parse(product.specs) : {};
@@ -138,7 +138,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
                 )}
               </div>
               <a
-                href={buildAffiliateLink(lowestDeal.retailer, lowestDeal.url, 'product-page', 'cta-button')}
+                href={buildAffiliateLink(lowestDeal.retailer as any, lowestDeal.url, 'product-page', 'cta-button')}
                 target="_blank"
                 rel="noopener noreferrer sponsored"
                 className="block w-full bg-green-600 hover:bg-green-700 text-white text-center font-bold py-3 px-6 rounded-lg transition"

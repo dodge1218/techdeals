@@ -10,7 +10,6 @@ export async function GET(request: Request) {
       where: niche ? { niche } : undefined,
       include: {
         products: true,
-        mediaLinks: true,
       },
       orderBy: {
         publishedAt: 'desc',

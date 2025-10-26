@@ -12,12 +12,12 @@ const JOBS = {
   'deals-radar': {
     fn: runDealsRadar,
     interval: 60 * 60 * 1000, // 1 hour
-    lastRun: null,
+    lastRun: null as number | null,
   },
   'trend-finder': {
     fn: runTrendFinder,
     interval: 6 * 60 * 60 * 1000, // 6 hours
-    lastRun: null,
+    lastRun: null as number | null,
   },
 }
 
