@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=file:./prisma/dev.db
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-techdeals2025}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+    volumes:
+      - ./prisma:/app/prisma
+    restart: unless-stopped
+    networks:
+      - techdeals-network
+
+  scheduler:
+    build: .
+    command: node scripts/scheduler.js
+    environment:
+      - DATABASE_URL=file:./prisma/dev.db
+    volumes:
+      - ./prisma:/app/prisma
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - techdeals-network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    networks:
+      - techdeals-network
+
+networks:
+  techdeals-network:
+    driver: bridge

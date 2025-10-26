@@ -1,0 +1,11 @@
+{
+  "buildCommand": "pnpm install && pnpm prisma generate && pnpm build",
+  "outputDirectory": ".next",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "ADMIN_PASSWORD": "@admin-password",
+    "NEXT_PUBLIC_SITE_URL": "@site-url"
+  }
+}
