@@ -1,0 +1,115 @@
+techdeals/
+├── README.md                    # Project overview
+├── RECOVERY.md                  # Crash recovery playbook ✅ NEW
+├── QUICKSTART.md                # 30-second launch guide
+├── Makefile                     # Idempotent build targets ✅ NEW
+├── QA_RC_CHECKLIST.md           # Release candidate checklist ✅ NEW
+├── .env.sample                  # Environment variables template
+├── package.json                 # Dependencies + scripts (updated)
+├── tsconfig.json                # TypeScript config
+├── tailwind.config.js           # Tailwind CSS v3 + v4
+├── next.config.ts               # Next.js 16 config
+├── docker-compose.yml           # Redis + PostgreSQL services
+├── .github/
+│   └── workflows/
+│       └── ci.yml               # GitHub Actions CI/CD
+├── prisma/
+│   ├── schema.prisma            # Database schema (10 models)
+│   ├── seed.ts                  # Original seed (10 products)
+│   ├── seed-50.ts               # Expanded seed (52 products) ✅ NEW
+│   └── dev.db                   # SQLite database (seeded)
+├── app/                         # Next.js pages (App Router)
+│   ├── layout.tsx               # Root layout + nav + footer
+│   ├── page.tsx                 # Home (trending products)
+│   ├── deals/page.tsx           # Deals listing
+│   ├── trends/page.tsx          # Trend Finder dashboard
+│   ├── articles/
+│   │   ├── page.tsx             # Article list
+│   │   └── [slug]/page.tsx      # Article detail (roundup)
+│   ├── products/
+│   │   └── [id]/page.tsx        # Product detail (offers + videos)
+│   └── api/
+│       ├── deals/route.ts       # GET deals with filtering
+│       ├── articles/route.ts    # GET articles
+│       ├── trends/route.ts      # GET trends by timeframe
+│       ├── price-watch/route.ts # POST create price watch
+│       └── write-article/route.ts # POST generate AI article
+├── components/                  # React components
+│   ├── deal-card.tsx            # Deal display card
+│   ├── article-card.tsx         # Article preview card
+│   ├── trend-chart.tsx          # Trend visualization
+│   ├── products/
+│   │   ├── DealCard.tsx         # Product deal card
+│   │   ├── VideoEmbed.tsx       # YouTube embed modal
+│   │   └── PriceChart.tsx       # Price history chart
+│   └── ui/                      # shadcn/ui components
+│       ├── button.tsx
+│       ├── card.tsx
+│       └── badge.tsx
+├── lib/                         # Core libraries
+│   ├── db.ts                    # Prisma client singleton
+│   ├── utils.ts                 # Utilities (cn, etc.)
+│   ├── affiliate.ts             # Affiliate link builders
+│   ├── compliance.ts            # FTC disclosure utilities
+│   ├── llm-provider.ts          # LLM abstraction (mock → real)
+│   ├── search.ts                # BM25 search implementation
+│   ├── mock-data.ts             # Sample data generators
+│   ├── adapters/                # Source adapters
+│   │   ├── types.ts             # SourceAdapter interface
+│   │   ├── index.ts             # Adapter registry
+│   │   ├── amazon.ts            # Amazon PA-API (mock ready)
+│   │   ├── bestbuy.ts           # Best Buy API (mock ready)
+│   │   ├── newegg.ts            # Newegg adapter (mock)
+│   │   └── youtube/
+│   │       ├── index.ts
+│   │       └── client.ts        # YouTube Data API v3
+│   ├── affiliate/
+│   │   ├── index.ts
+│   │   └── link-builders.ts     # Amazon/BestBuy/Newegg builders
+│   └── jobs/
+│       ├── queue.ts             # BullMQ setup
+│       └── workers.ts           # Background workers (price, trends, social)
+├── docs/                        # Documentation
+│   ├── PRD.md                   # Product requirements
+│   ├── ARCHITECTURE.md          # System design
+│   ├── DATA_MODELS.md           # Database schema reference
+│   ├── ROADMAP.md               # Sprint plan (6 sprints)
+│   └── TEST_STRATEGY.md         # Testing approach
+├── scripts/
+│   └── seed.ts                  # Alternative seed script
+└── src/                         # Alternative source structure (legacy)
+    ├── app/                     # Duplicate pages (to be cleaned)
+    ├── lib/                     # Duplicate libs (to be cleaned)
+    ├── services/                # Service layer
+    │   ├── ingest/
+    │   │   └── adapters.ts      # Source adapters
+    │   ├── writer/
+    │   │   └── article-generator.ts # Article Writer
+    │   └── social/
+    │       └── twitter-bot.ts   # Twitter/X bot
+    └── jobs/
+        └── worker.ts            # Worker entry point
+
+KEY FILES:
+  ✅ RECOVERY.md           # Emergency rebuild commands
+  ✅ Makefile              # One-command builds (make fresh, make rc)
+  ✅ QA_RC_CHECKLIST.md    # 100+ test cases for RC
+  ✅ prisma/seed-50.ts     # 52 products, 100+ deals, 30d price history
+  ✅ package.json          # Updated scripts (db:reset, fresh, etc.)
+  ✅ .env.sample           # Documented secrets (all optional)
+  
+DATABASE SEEDED WITH:
+  - 52 products (12 miners, 15 PC parts, 12 phones, 13 gaming)
+  - 100+ deals (Amazon, BestBuy, Newegg)
+  - 1600+ price history records (30 days per product)
+  - 100+ media assets (YouTube videos)
+  - 52 trend signals
+  - 2 published articles
+
+COMMANDS TO RUN:
+  make fresh     # Clean rebuild
+  make dev       # Start dev server
+  make rc        # Build release candidate
+  make smoke     # Run smoke tests
+  pnpm dev       # Start Next.js dev server
+  pnpm db:studio # Open Prisma Studio
