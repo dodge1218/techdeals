@@ -8,12 +8,19 @@
     "start": "next start",
     "lint": "eslint",
     "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:seed": "tsx prisma/seed.ts",
+    "db:push": "prisma db push --skip-generate",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed-50.ts",
+    "db:seed:original": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
+    "db:reset": "rm -f prisma/dev.db prisma/dev.db-journal && pnpm db:push && pnpm db:seed",
     "seed": "tsx scripts/seed.ts",
     "workers": "tsx lib/jobs/workers.ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "echo 'No tests yet'",
+    "test:e2e": "echo 'No E2E tests yet'",
+    "clean": "rm -rf .next node_modules/.cache",
+    "fresh": "rm -rf node_modules .next && pnpm install && pnpm db:generate && pnpm db:push && pnpm db:seed"
   },
   "dependencies": {
     "@prisma/client": "^6.18.0",
