@@ -16,6 +16,7 @@
     "db:reset": "rm -f prisma/dev.db prisma/dev.db-journal && pnpm db:push && pnpm db:seed",
     "seed": "tsx scripts/seed.ts",
     "workers": "tsx lib/jobs/workers.ts",
+    "scheduler": "node scripts/scheduler.js",
     "jobs:deals-radar": "tsx lib/jobs/deals-radar.ts",
     "jobs:trend-finder": "tsx lib/jobs/trend-finder.ts",
     "jobs:article-writer": "tsx lib/jobs/article-writer.ts",
