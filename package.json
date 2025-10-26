@@ -14,7 +14,7 @@
     "db:seed:original": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "db:reset": "rm -f prisma/dev.db prisma/dev.db-journal && pnpm db:push && pnpm db:seed",
-    "seed": "tsx scripts/seed.ts",
+    "seed": "tsx prisma/seed-50.ts",
     "workers": "tsx lib/jobs/workers.ts",
     "scheduler": "node scripts/scheduler.js",
     "jobs:deals-radar": "tsx lib/jobs/deals-radar.ts",

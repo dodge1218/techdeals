@@ -48,3 +48,37 @@ export function detectRetailer(url: string): Retailer | null {
     return null;
   }
 }
+
+/**
+ * Check if price data is stale (older than 24 hours)
+ */
+export function isPriceStale(lastCheckedAt: Date | string): boolean {
+  const date = new Date(lastCheckedAt)
+  const now = new Date()
+  const hoursSince = (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+  return hoursSince > 24
+}
+
+/**
+ * Get price timestamp label (e.g., "as of 2 hours ago")
+ */
+export function getPriceTimestampLabel(lastCheckedAt: Date | string): string {
+  const date = new Date(lastCheckedAt)
+  const now = new Date()
+  const hoursSince = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
+  
+  if (hoursSince < 1) return 'as of moments ago'
+  if (hoursSince === 1) return 'as of 1 hour ago'
+  if (hoursSince < 24) return `as of ${hoursSince} hours ago`
+  
+  const daysSince = Math.floor(hoursSince / 24)
+  if (daysSince === 1) return 'as of 1 day ago'
+  return `as of ${daysSince} days ago`
+}
+
+/**
+ * Get Amazon disclosure text
+ */
+export function getAmazonDisclosure(): string {
+  return 'As an Amazon Associate, we earn from qualifying purchases. Prices and availability are subject to change.'
+}

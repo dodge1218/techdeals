@@ -270,3 +270,11 @@ export class YouTubeAdapter implements VideoAdapter {
     return filtered.slice(0, maxResults);
   }
 }
+
+/**
+ * Legacy function for backward compatibility
+ */
+export async function searchVideos(query: string, maxResults = 5) {
+  const adapter = new YouTubeAdapter()
+  return adapter.search(query, maxResults)
+}

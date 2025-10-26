@@ -22,7 +22,7 @@ const JOBS = {
 }
 
 async function runJob(name: string) {
-  const job = JOBS[name]
+  const job = JOBS[name as keyof typeof JOBS]
   if (!job) {
     console.error(`Unknown job: ${name}`)
     return
